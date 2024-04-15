@@ -4,6 +4,13 @@ namespace DefaultNamespace;
 [Route("/animals-controller")]
 public class AnimalsController : ControllerBase
 {
+    private readonly AnimalService _animalService;
+    public AnimalsController(AnimalService animalService)
+    {
+        _animalService = animalService;
+    }
+    
+    
     [HttpGet]
     public IActionResult GetAnimals()
     {
@@ -21,5 +28,22 @@ public class AnimalsController : ControllerBase
     public IActionResult AddAnimal()
     {
         return Created();
+    }
+    
+    [HttpPut("{id}")]
+    public IActionResult UpdateAnimal(int id, [FromBody] Animal animal)
+    {
+        if (id != animal.Id)
+            return BadRequest();
+
+        _animalService.UpdateAnimal(animal);
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteAnimal(int id)
+    {
+        _animalService.DeleteAnimal(id);
+        return NoContent();
     }
 }
